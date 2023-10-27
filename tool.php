@@ -54,8 +54,8 @@ if (!$toolid and !$lticontextid) {
 
 if (!$toolid and $lticontextid) {
     // Check if there is more that one course for this LTI context id.
-    $idnumber = local_ltiprovider_get_new_course_info('idnumber', $mycontext);
-    if ($DB->count_records('course', array('idnumber' => $idnumber)) > 1) {
+    $idnumber = local_ltiprovider_get_new_course_info('idnumber', $mycontext, false);
+    if (!empty($idnumber) && $DB->count_records('course', array('idnumber' => $idnumber)) > 1) {
         print_error('cantdeterminecontext', 'local_ltiprovider');
     }
     if ($course = $DB->get_record('course', array('idnumber' => $idnumber))) {

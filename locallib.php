@@ -273,10 +273,11 @@ function local_ltiprovider_user_match( $newuser, $olduser ) {
  *
  * @param string $field The course field to get (fullname, shortname or idnumber)
  * @param stdClass $context The global LTI context
+ * @param  boolean $show_error_on_empty Show error if return value is empty we have to allow empt values for custom context id on Temporary context line 35 more or less tool.php
  *
  * @return string          The field
  */
-function local_ltiprovider_get_new_course_info( $field, $context ) {
+function local_ltiprovider_get_new_course_info( $field, $context, $show_error_on_empty = true ) {
     global $DB;
 
     $info = '';
@@ -285,13 +286,13 @@ function local_ltiprovider_get_new_course_info( $field, $context ) {
 
     switch ( $setting ) {
         case 0:
-            $info = $context->info['context_id'];
+            $info = !empty($context->info['context_id']) ? $context->info['context_id'] : '';
             break;
         case '1':
-            $info = $context->info['context_title'];
+            $info = !empty($context->info['context_title']) ? $context->info['context_title'] : '';
             break;
         case '2':
-            $info = $context->info['context_label'];
+            $info = !empty($context->info['context_label']) ? $context->info['context_label'] : '';
             break;
         case '3':
             $info = $context->info['oauth_consumer_key'] . ':' . $context->info['context_id'];
@@ -303,7 +304,7 @@ function local_ltiprovider_get_new_course_info( $field, $context ) {
             $info = $context->info['oauth_consumer_key'] . ':' . $context->info['context_label'];
             break;
         case '6':
-            $info = local_ltiprovider_get_custom_new_course_info( $field, $context );
+            $info = local_ltiprovider_get_custom_new_course_info( $field, $context, $show_error_on_empty);
             break;
     }
 
@@ -334,12 +335,13 @@ function local_ltiprovider_get_new_course_info( $field, $context ) {
  *
  * @param $field
  * @param $context
+ * @param boolean $show_error_on_empty Show error if return value is empty we have to allow empt values for custom context id on Temporary context line 35 more or less tool.php
  *
  * @return string
  * @throws dml_exception
  * @throws moodle_exception
  */
-function local_ltiprovider_get_custom_new_course_info( $field, $context ) {
+function local_ltiprovider_get_custom_new_course_info( $field, $context, $show_error_on_empty = true ) {
     $value        = '';
     $customformat = trim( get_config( 'local_ltiprovider', $field . "formatcustom" ) );
     if ( $customformat ) {
@@ -352,10 +354,10 @@ function local_ltiprovider_get_custom_new_course_info( $field, $context ) {
         }
     }
 
-    if ( empty( $value ) ) {
+    if ( $show_error_on_empty && empty( $value ) ) {
         $error        = new stdClass();
         $error->field = $field . 'formatcustom';
-        print_error( get_string( 'cantgeneratecustomltikey', 'local_ltiprovider', $error ) );
+        throw new \moodle_exception(get_string( 'cantgeneratecustomltikey', 'local_ltiprovider', $error ));
     }
 
     return $value;
@@ -441,7 +443,7 @@ function local_ltiprovider_duplicate_course(
     $visible = 1,
     $options = array(),
     $useridcreating = null,
-    $context
+    $context = null
 ) {
     global $CFG, $USER, $DB;
 
