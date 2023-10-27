@@ -345,12 +345,19 @@ function local_ltiprovider_get_custom_new_course_info( $field, $context, $show_e
     $value        = '';
     $customformat = trim( get_config( 'local_ltiprovider', $field . "formatcustom" ) );
     if ( $customformat ) {
-        $separators = array( ':', ' ', '/' );
-        foreach ( $separators as $separator ) {
-            $customformatarray = explode( $separator, $customformat );
-            foreach ( $customformatarray as $item ) {
-                $value = local_ltiprovider_get_custom_new_course_info_add_param( $value, $item, $context, $separator );
+
+        $separators = array(':', ' ', '/');
+        if (strpos($customformat, ':') !== false ||
+                strpos($customformat, ' ') !== false ||
+                strpos($customformat, '/') !== false) {
+            foreach ($separators as $separator) {
+                $customformatarray = explode($separator, $customformat);
+                foreach ($customformatarray as $item) {
+                    $value = local_ltiprovider_get_custom_new_course_info_add_param($value, $item, $context, $separator);
+                }
             }
+        } else {
+            $value = isset($context->info[ $customformat ]) ? $context->info[ $customformat ] : '';
         }
     }
 
