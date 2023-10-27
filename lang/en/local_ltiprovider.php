@@ -150,7 +150,7 @@ $string['forcesyncmembers'] = 'Force sync members';
 $string['nomanualenrol'] = 'Manual enrol method is not enabled';
 
 $string['fullnameformatcustom'] = 'Custom fullname format for new created courses';
-$string['fullnameformatcustomdesc'] = 'This field only applies when fullnameformat is selected as "custom", then you can create formulas like "consumer_key : custom_param1 : custom_param2". The field separator can be ":" or " " or "/"';
+$string['fullnameformatcustomdesc'] = 'This field only applies when fullnameformat is selected as "custom", then you can create formulas like "consumer_key : custom_param1 : custom_param2". The field sepator can be ":", "/" or " "';
 
 $string['shortnameformatcustom'] = 'Custom shortname format for new created courses';
 $string['shortnameformatcustomdesc'] = 'This field only applies when shortnameformat is selected as "custom", then you can create formulas like "consumer_key : custom_param1 custom_param2". The field separator can be ":" or " " or "/"';

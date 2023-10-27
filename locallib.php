@@ -1104,12 +1104,15 @@ function local_ltiprovier_do_grades_sync( $tool, $users, $timenow, $force_send =
     $user_count  = 0;
     $send_count  = 0;
     $error_count = 0;
+    $total_users = 0;
+    $extensions_invalid_result = 0;
 
     $completion = new \completion_info( get_course( $tool->courseid ) );
 
     $do_update_last_sync = false;
 
     if ( $users ) {
+        $total_users = count($users);
         foreach ( $users as $user ) {
 
             $data = array(
@@ -1244,11 +1247,13 @@ function local_ltiprovier_do_grades_sync( $tool, $users, $timenow, $force_send =
                     $log[] = " Invalid context: contextid = " . $tool->contextid;
                 }
             } else {
-                $log[] = " Extensions return invalid result for {$user->id} and tool " . $tool->contextid;
+                $extensions_invalid_result = $extensions_invalid_result + 1;
+                $log[] = " Extensions return invalid result for {$user->id} and tool $tool->contextid (user id {$user->userid} and tool id {$tool->id})";
             }
         }
     }
-    $log[] = " Completed sync tool id $tool->id course id $tool->courseid users=$user_count sent=$send_count errors=$error_count";
+    $log[] = " Completed sync tool id $tool->id course id $tool->courseid users=$total_users sent=$send_count errors=$error_count
+    sync_users=$user_count extensions_invalid_result=$extensions_invalid_result";
     if ( $do_update_last_sync ) {
         $DB->set_field( 'local_ltiprovider', 'lastsync', $timenow, array( 'id' => $tool->id ) );
     }
