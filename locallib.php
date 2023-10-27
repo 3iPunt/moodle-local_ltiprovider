@@ -345,7 +345,7 @@ function local_ltiprovider_get_custom_new_course_info( $field, $context, $show_e
     $value        = '';
     $customformat = trim( get_config( 'local_ltiprovider', $field . "formatcustom" ) );
     if ( $customformat ) {
-        $separators = array( ':', ' ' );
+        $separators = array( ':', ' ', '/' );
         foreach ( $separators as $separator ) {
             $customformatarray = explode( $separator, $customformat );
             foreach ( $customformatarray as $item ) {
