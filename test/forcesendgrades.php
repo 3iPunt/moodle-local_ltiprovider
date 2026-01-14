@@ -44,6 +44,7 @@ $printresponse    = optional_param( 'printresponse', 0, PARAM_BOOL );
 $sesskey          = optional_param( 'sesskey', null, PARAM_RAW );
 $user_force_grade = optional_param( 'user_force_grade', null, PARAM_RAW );
 $selected_users   = optional_param( 'selected_users', 0, PARAM_BOOL );
+$forceerror       = optional_param( 'forceerror', 0, PARAM_BOOL );
 
 if ( ! empty( $sesskey ) ) {
 	require_sesskey();
@@ -113,15 +114,72 @@ if ( $selected_users && strlen( $user_force_grade ) == 0 ) {
 	}
 
 }
-// Check if we requested this by URL or via the sync grades report.
-if ( $toolid & ! empty( $sesskey ) ) {
+
+// If forceerror flag is set, inject a test error log line to visualize UI state.
+if ( $forceerror ) {
+	$log[] = 'error: forced error for testing UI state';
+}
+
+// Check if we requested this by URL or via the sync grades report (printresponse=1).
+if ( $toolid && ( ! empty( $sesskey ) || $printresponse ) ) {
 	$link = new moodle_url( '/local/ltiprovider/syncreport.php', array( 'id' => $toolid ) );
 
 	$PAGE->set_context( $coursecontext );
 	$PAGE->set_url( $link );
-	notice( implode( "<br />", $log ), $link );
+	
+	// Parse log messages to detect errors and success
+	$messages = array();
+	$has_errors = false;
+	$success_count = 0;
+	$error_count = 0;
+	
+	foreach ($log as $logline) {
+		$type = 'info';
+		$errmatch = null;
+		$sentmatch = null;
+
+		// Detect explicit non-zero errors like "errors=3".
+		if (preg_match('/errors=([1-9][0-9]*)/i', $logline, $errmatch)) {
+			$type = 'error';
+			$has_errors = true;
+			$error_count += intval($errmatch[1]);
+		}
+		// Fallback: generic error/failed, but ignore harmless "errors=0" substrings.
+		else if ((stripos($logline, 'error') !== false || stripos($logline, 'failed') !== false)
+		    && stripos($logline, 'errors=0') === false
+		    && stripos($logline, 'error=0') === false) {
+			$type = 'error';
+			$has_errors = true;
+			$error_count++;
+		}
+		// Success: sent=X or completed, count sent if available.
+		else if (preg_match('/sent=(\d+)/i', $logline, $sentmatch)) {
+			$type = 'success';
+			$success_count += intval($sentmatch[1]);
+		}
+		else if (stripos($logline, 'completed') !== false) {
+			$type = 'success';
+			$success_count++;
+		}
+
+		$messages[] = array('text' => $logline, 'type' => $type);
+	}
+	
+	// Build template context
+	$templatecontext = array(
+		'heading' => get_string('forcesendgrades', 'local_ltiprovider'),
+		'messages' => $messages,
+		'backurl' => $link->out(false),
+		'has_errors' => $has_errors,
+		'success_count' => $success_count > 0 ? $success_count : null,
+		'error_count' => $error_count > 0 ? $error_count : null,
+		'auto_open' => count($log) < 10
+	);
+	
+	echo $OUTPUT->header();
+	echo $OUTPUT->render_from_template('ltiproviderextension_amnh/forcesendresult', $templatecontext);
+	echo $OUTPUT->footer();
 } else {
 	// @header( 'Content-Type: text/plain; charset=utf-8' );
 	notice( implode( "<br />", $log ) );
 }
-

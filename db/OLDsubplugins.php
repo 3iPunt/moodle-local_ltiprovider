@@ -15,7 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This file keeps track of upgrades to the ltiprovider plugin
+ * This file keeps track of upgrades to the
+ *
+ * ltiprovider plugin
  *
  * @package    local
  * @subpackage ltiprovider
@@ -25,6 +27,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$subplugins = array(
+$subplugins = [
     'ltiproviderextension' => 'local/ltiprovider/extension',
-);
+];

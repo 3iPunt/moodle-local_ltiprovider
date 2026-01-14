@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -42,10 +43,7 @@ if (!$context = context_course::instance($course->id)) {
 require_login($course);
 require_capability('local/ltiprovider:view', $context);
 
-// $PAGE->navbar->add(get_string('toolsprovided', 'local_ltiprovider'));
 echo $OUTPUT->header();
-
-echo $OUTPUT->heading(get_string('toolsprovided', 'local_ltiprovider'));
 
 $tools = $DB->get_records('local_ltiprovider', array('courseid' => $course->id));
 
@@ -55,36 +53,39 @@ foreach ($tools as $tool) {
         local_ltiprovider_delete_tool($tool);
         continue;
     }
-    $line = array();
-    $line[] = $toolcontext->get_context_name();
-    $line[] = $tool->secret;
-    $line[] = new moodle_url('/local/ltiprovider/tool.php', array('id' => $tool->id));
+
+    $tooldata = new stdClass();
+    $tooldata->id = $tool->id;
+    $tooldata->name = $toolcontext->get_context_name();
+    $tooldata->secret = $tool->secret;
+    $tooldata->launchurl = (new moodle_url('/local/ltiprovider/tool.php', array('id' => $tool->id)))->out(false);
 
     if (has_capability('local/ltiprovider:manage', $context)) {
-        $buttons = array();
+        // Botón editar
+        $tooldata->editurl = (new moodle_url('/local/ltiprovider/edit.php', array('id'=>$tool->id, 'sesskey'=>sesskey())))->out(false);
 
-        $buttons[] = html_writer::link(new moodle_url('/local/ltiprovider/edit.php', array('id'=>$tool->id, 'delete'=>1, 'sesskey'=>sesskey())), $OUTPUT->pix_icon('t/delete', get_string('delete')));
-        $buttons[] =  html_writer::link(new moodle_url('/local/ltiprovider/edit.php', array('id'=>$tool->id, 'sesskey'=>sesskey())), $OUTPUT->pix_icon('t/edit', get_string('edit')));
+        // Botón eliminar
+        $tooldata->deleteurl = (new moodle_url('/local/ltiprovider/edit.php', array('id'=>$tool->id, 'delete'=>1, 'sesskey'=>sesskey())))->out(false);
 
+        // Botón show/hide
         if ($tool->disabled) {
-            $buttons[] = html_writer::link(new moodle_url('/local/ltiprovider/edit.php', array('id'=>$tool->id, 'show'=>1, 'sesskey'=>sesskey())), $OUTPUT->pix_icon('t/show', get_string('show')));
+            $tooldata->showurl = (new moodle_url('/local/ltiprovider/edit.php', array('id'=>$tool->id, 'show'=>1, 'sesskey'=>sesskey())))->out(false);
         } else {
-            $buttons[] = html_writer::link(new moodle_url('/local/ltiprovider/edit.php', array('id'=>$tool->id, 'hide'=>1, 'sesskey'=>sesskey())), $OUTPUT->pix_icon('t/hide', get_string('hide')));
+            $tooldata->hideurl = (new moodle_url('/local/ltiprovider/edit.php', array('id'=>$tool->id, 'hide'=>1, 'sesskey'=>sesskey())))->out(false);
         }
 
+        // Botón grades sync
         if ($tool->sendgrades) {
-            $buttons[] = html_writer::link(new moodle_url('/local/ltiprovider/syncreport.php', array('id'=>$tool->id)), $OUTPUT->pix_icon('i/grades', get_string('gradessyncreport', 'local_ltiprovider')));
+            $tooldata->gradesurl = (new moodle_url('/local/ltiprovider/syncreport.php', array('id'=>$tool->id)))->out(false);
         }
 
+        // Botón members sync
         if ($tool->syncmembers) {
-            $buttons[] = html_writer::link(new moodle_url('/local/ltiprovider/syncmembers.php', array('id'=>$tool->id)), $OUTPUT->pix_icon('i/users', get_string('forcesyncmembers', 'local_ltiprovider')));
+            $tooldata->membersurl = (new moodle_url('/local/ltiprovider/syncmembers.php', array('id'=>$tool->id)))->out(false);
         }
-
-        $line[] = implode(' ', $buttons);
-    } else {
-        $line[] = '';
     }
-    $data[] = $line;
+
+    $data[] = $tooldata;
 }
 
 // Moodle 2.2 and onwards
@@ -92,18 +93,12 @@ if (isset($CFG->allowframembedding) and !$CFG->allowframembedding) {
     echo $OUTPUT->box(get_string('allowframembedding', 'local_ltiprovider'));
 }
 
-$table = new html_table();
-$table->head  = array(
-    get_string('name', 'local_ltiprovider'),
-    get_string('secret', 'local_ltiprovider'),
-    get_string('url', 'local_ltiprovider'),
-    get_string('edit'));
-$table->size  = array('20%', '20%', '50%', '10%');
-$table->align = array('left', 'left', 'left', 'center');
-$table->width = '99%';
-$table->data  = $data;
-echo html_writer::table($table);
+// Renderizar con el nuevo template
+$templatecontext = [
+    'tools' => $data,
+    'addurl' => (new moodle_url('/local/ltiprovider/edit.php', array('id' => -1, 'courseid' => $course->id)))->out(false)
+];
 
-echo $OUTPUT->single_button(new moodle_url('/local/ltiprovider/edit.php', array('id' => -1, 'courseid' => $course->id)), get_string('add'));
+echo $OUTPUT->render_from_template('ltiproviderextension_amnh/tools', $templatecontext);
 
 echo $OUTPUT->footer();

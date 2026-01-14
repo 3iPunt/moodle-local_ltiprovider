@@ -1,0 +1,9 @@
+{
+    "subplugintypes": {
+        "ltiproviderextension": "extension"
+    },
+    "plugintypes": {
+        "ltiproviderextension": "local/ltiprovider/extension"
+    }
+
+}

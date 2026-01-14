@@ -253,7 +253,33 @@ function local_ltiprovider_cron() {
  * @return bool             True or false if call is successfully
  */
 function local_ltiprovider_call_hook($hookname, $data) {
+    // Try the standard way first (for Moodle < 5.0 compatibility)
     $plugins = get_plugin_list_with_function('ltiproviderextension', $hookname);
+    
+    // If no plugins found, manually load them (Moodle 5.0 compatibility)
+    if (empty($plugins)) {
+        $extensiondir = __DIR__ . '/extension';
+        if (is_dir($extensiondir)) {
+            $items = new DirectoryIterator($extensiondir);
+            foreach ($items as $item) {
+                if ($item->isDot() || !$item->isDir()) {
+                    continue;
+                }
+                
+                $pluginname = $item->getFilename();
+                $libfile = $extensiondir . '/' . $pluginname . '/lib.php';
+                
+                if (file_exists($libfile)) {
+                    require_once($libfile);
+                    $functionname = 'ltiproviderextension_' . $pluginname . '_' . $hookname;
+                    if (function_exists($functionname)) {
+                        $plugins[$functionname] = $functionname;
+                    }
+                }
+            }
+        }
+    }
+    
     $r = true;
     if (!empty($plugins)) {
         foreach ($plugins as $plugin) {

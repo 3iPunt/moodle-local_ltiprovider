@@ -27,10 +27,30 @@ namespace local_ltiprovider\plugininfo;
 
 use core\plugininfo\base;
 
+
 defined('MOODLE_INTERNAL') || die();
 
 
 class ltiproviderextension extends base {
     // Accepts 100% base implementation.
+    public function get_settings_section_name(): string {
+        return $this->component;
+    }
+
+    public function get_settings_url(): ?\moodle_url {
+        return null;
+    }
+
+    public function is_enabled(): bool {
+        return true;
+    }
+
+    public function is_uninstall_allowed(): bool {
+        return true;
+    }
+
+    public static function get_subplugins(): array {
+        return [];
+    }
 
 }

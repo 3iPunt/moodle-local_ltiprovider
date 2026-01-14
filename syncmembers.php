@@ -52,13 +52,62 @@ $PAGE->set_heading($course->fullname . ': '.$strheading);
 
 echo $OUTPUT->header();
 
-$userphotos = array();
-$consumers = array();
-$timenow = time();
-$ret = local_ltiprovider_membership_service($tool, $timenow, $userphotos, $consumers);
-echo '<p>Response => <pre>'.htmlentities($ret['response']).'</pre></p>';
+// Set up return URL
+$returnurl = new moodle_url('/local/ltiprovider/index.php', array('courseid' => $courseid));
 
-$userphotos = $ret['userphotos'];
-local_ltiprovider_membership_service_update_userphotos($userphotos);
+// Initialize template context
+$templatecontext = array();
+$templatecontext['heading'] = $strheading;
+$templatecontext['backurl'] = $returnurl->out(false);
+$templatecontext['status_loading'] = false;
+$templatecontext['status_success'] = false;
+$templatecontext['status_error'] = false;
+
+// Check if we already ran the sync
+$didsync = optional_param('didsync', 0, PARAM_INT);
+
+if (!$didsync) {
+    // First load - show loading and redirect to execute sync
+    $templatecontext['status_loading'] = true;
+    echo $OUTPUT->render_from_template('ltiproviderextension_amnh/syncmembers', $templatecontext);
+    
+    // Redirect to execute sync
+    $syncurl = new moodle_url('/local/ltiprovider/syncmembers.php', array('id' => $id, 'didsync' => 1));
+    echo '<script>setTimeout(function() { window.location.href = "' . $syncurl->out(false) . '"; }, 500);</script>';
+} else {
+    // Second load - execute sync and show result
+    $userphotos = array();
+    $consumers = array();
+    $timenow = time();
+
+    try {
+        $ret = local_ltiprovider_membership_service($tool, $timenow, $userphotos, $consumers);
+        
+        // Check if there's any response or consumers processed
+        if (!empty($ret['consumers']) || !empty($ret['userphotos'])) {
+            // Sync was successful
+            $userphotos = $ret['userphotos'];
+            local_ltiprovider_membership_service_update_userphotos($userphotos);
+            
+            // Show success state
+            $templatecontext['status_success'] = true;
+            echo $OUTPUT->render_from_template('ltiproviderextension_amnh/syncmembers', $templatecontext);
+        } else {
+            // No data to sync
+            $templatecontext['status_error'] = true;
+            $templatecontext['errormessage'] = 'No users to sync or no memberships URL configured.';
+            $retryurl = new moodle_url('/local/ltiprovider/syncmembers.php', array('id' => $id));
+            $templatecontext['retryurl'] = $retryurl->out(false);
+            echo $OUTPUT->render_from_template('ltiproviderextension_amnh/syncmembers', $templatecontext);
+        }
+    } catch (Exception $e) {
+        // Sync failed - show error state
+        $templatecontext['status_error'] = true;
+        $templatecontext['errormessage'] = $e->getMessage();
+        $retryurl = new moodle_url('/local/ltiprovider/syncmembers.php', array('id' => $id));
+        $templatecontext['retryurl'] = $retryurl->out(false);
+        echo $OUTPUT->render_from_template('ltiproviderextension_amnh/syncmembers', $templatecontext);
+    }
+}
 
 echo $OUTPUT->footer();
