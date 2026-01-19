@@ -1,302 +1,302 @@
-# LTI Provider + AMNH: Cambios y Mejoras
+# LTI Provider + AMNH: Changes and Improvements
 
-## 📋 ¿Qué es cada cosa?
+## 📋 What is each thing?
 
 ### LTI Provider (Base)
 
-Plugin que conecta Moodle con plataformas externas como Canvas o Blackboard mediante el estándar LTI.
+Plugin that connects Moodle with external platforms such as Canvas or Blackboard using the LTI standard.
 
 ### AMNH Extension
 
-Mejoras visuales y funcionales que hacen más fácil usar el LTI Provider.
+Visual and functional improvements that make LTI Provider easier to use.
 
 ---
 
-## 🆕 Principales Novedades
+## 🆕 Main Features
 
-### 1. Sincronización Automática (Tareas Cron)
+### 1. Automatic Synchronization (Cron Tasks)
 
-**Nuevas tareas programadas:**
+**New scheduled tasks:**
 
-- ✅ Envío automático de calificaciones cada 15 minutos
-- ✅ Sincronización de usuarios matriculados
-- ✅ Limpieza de cursos eliminados
+- ✅ Automatic grade submission every 15 minutes
+- ✅ Enrolled users synchronization
+- ✅ Cleanup of deleted courses
 
-**Beneficio:** Las calificaciones se envían solas, sin intervención manual.
-
----
-
-### 2. Reporte de Sincronización Visual
-
-**Antes:**
-
-```
-Lista simple de usuarios
-Sin filtros
-Sin estadísticas
-```
-
-**Ahora:**
-
-```
-✅ Tabla interactiva con colores
-✅ Filtros por estado (éxito/error/pendiente)
-✅ Checkboxes para selección múltiple
-✅ Botón "Enviar seleccionados"
-✅ Exportar a Excel/CSV
-```
+**Benefit:** Grades are sent automatically, without manual intervention.
 
 ---
 
-### 3. Envío Forzado Mejorado
+### 2. Visual Synchronization Report
 
-**Nuevas capacidades:**
-
-| Antes                | Ahora                                     |
-| -------------------- | ----------------------------------------- |
-| Enviar todo el curso | Seleccionar usuarios específicos         |
-| Sin feedback         | Contadores de éxito/error en tiempo real |
-| Texto plano          | Interface visual con colores              |
-| Sin logs             | Panel de logs expandible                  |
-
-**Ejemplo visual:**
+**Before:**
 
 ```
-✅ 15 calificaciones enviadas
-❌ 2 errores detectados
+Simple list of users
+No filters
+No statistics
+```
 
-📋 Ver detalles
-  • Success: Calificación enviada a Juan
-  • Success: Calificación enviada a María  
-  • Error: Pedro no completó el curso
+**Now:**
+
+```
+✅ Interactive table with colors
+✅ Filters by status (success/error/pending)
+✅ Checkboxes for multiple selection
+✅ "Send selected" button
+✅ Export to Excel/CSV
 ```
 
 ---
 
-### 4. Copiar con Un Clic
+### 3. Enhanced Forced Submission
 
-**Nuevo botón 📋** para copiar:
+**New capabilities:**
+
+| Before              | Now                                    |
+| ------------------- | -------------------------------------- |
+| Send entire course  | Select specific users                 |
+| No feedback         | Success/error counters in real time   |
+| Plain text          | Visual interface with colors          |
+| No logs             | Expandable log panel                  |
+
+**Visual example:**
+
+```
+✅ 15 grades sent successfully
+❌ 2 errors detected
+
+📋 View details
+  • Success: Grade sent to Juan
+  • Success: Grade sent to Maria
+  • Error: Pedro did not complete course
+```
+
+---
+
+### 4. Copy with One Click
+
+**New button 📋** to copy:
 
 - Consumer Key
 - Secret
-- URLs de configuración
-- Logs de error
+- Configuration URLs
+- Error logs
 
-**Antes:** Seleccionar texto manualmente
-**Ahora:** Clic → Copiado ✅
-
----
-
-### 5. Integración SOAP
-
-**Función:** Enviar datos a sistemas externos del museo (AMNH).
-
-**Qué se envía:**
-
-- Calificaciones
-- Rúbricas
-- Evaluaciones completas
-- Datos de estudiantes
+**Before:** Manually select text  
+**Now:** Click → Copied ✅
 
 ---
 
-## 🎨 Mejoras Visuales (AMNH)
+### 5. SOAP Integration
 
-### Templates Modernos
+**Function:** Send data to external museum systems (AMNH).
 
-**4 nuevos templates:**
+**What is sent:**
 
-1. **forcesendresult** - Resultado del envío forzado
-2. **syncreport** - Reporte de sincronización
-3. **syncmembers** - Sincronización de usuarios
-4. **tools** - Lista de herramientas LTI
-
-**Características:**
-
-- Responsive (se adapta a móviles)
-- Colores según estado
-- Iconos intuitivos
-- Accesibilidad mejorada
+- Grades
+- Rubrics
+- Complete evaluations
+- Student data
 
 ---
 
-## ⚡ Comparativa Rápida
+## 🎨 Visual Improvements (AMNH)
 
-### Envío de Calificaciones
+### Modern Templates
 
-| Aspecto                  | Base                     | Con AMNH                     |
-| ------------------------ | ------------------------ | ---------------------------- |
-| **Velocidad**      | Esperar cron (15-30 min) | Inmediato (clic)             |
-| **Control**        | Todo o nada              | Selección específica       |
-| **Feedback**       | ❌ Sin feedback          | ✅ Contadores en tiempo real |
-| **Visualización** | Texto plano              | Alertas con colores          |
-| **Logs**           | Sin clasificar           | Por tipo (éxito/error/info) |
+**4 new templates:**
 
-### Resolución de Problemas
+1. **forcesendresult** - Forced submission result
+2. **syncreport** - Synchronization report
+3. **syncmembers** - User synchronization
+4. **tools** - LTI tools list
 
-**Escenario:** 5 alumnos sin calificación en Canvas
+**Features:**
 
-| Base                    | Con AMNH               |
-| ----------------------- | ---------------------- |
-| 1. Contactar IT         | 1. Abrir reporte       |
-| 2. IT ejecuta script    | 2. Filtrar por "Error" |
-| 3. Esperar resultado    | 3. Seleccionar los 5   |
-| 4. Verificar en Canvas  | 4. Clic "Force Send"   |
-| ⏱️**30-60 min** | ⏱️**2 min**    |
+- Responsive (adapts to mobile)
+- Colors based on status
+- Intuitive icons
+- Improved accessibility
 
 ---
 
-## 🚀 Funcionalidades Destacadas
+## ⚡ Quick Comparison
 
-### 1. Selección Inteligente
+### Grade Submission
 
-**Tres formas de enviar:**
+| Aspect              | Base                 | With AMNH                  |
+| ------------------- | -------------------- | -------------------------- |
+| **Speed**           | Wait for cron (15-30 min) | Immediate (click)      |
+| **Control**         | All or nothing       | Specific selection         |
+| **Feedback**        | ❌ No feedback       | ✅ Real-time counters      |
+| **Visualization**   | Plain text           | Color alerts               |
+| **Logs**            | Unclassified         | By type (success/error/info) |
 
-- 📚 Todo el curso
-- 🎯 Solo usuarios seleccionados
-- 👤 Un usuario específico
+### Troubleshooting
 
-### 2. Filtros Avanzados
+**Scenario:** 5 students missing grades in Canvas
 
-En el reporte puedes filtrar por:
+| Base                | With AMNH          |
+| ------------------- | ------------------ |
+| 1. Contact IT       | 1. Open report     |
+| 2. IT runs script   | 2. Filter by "Error" |
+| 3. Wait for result  | 3. Select the 5    |
+| 4. Check Canvas     | 4. Click "Force Send" |
+| ⏱️ **30-60 min** | ⏱️ **2 min**    |
 
-- Estado (sincronizado/error/pendiente)
-- Fecha de última sincronización
-- Tipo de error
-- Curso o herramienta LTI
+---
 
-### 3. Estadísticas Automáticas
+## 🚀 Highlighted Features
 
-El sistema cuenta solo:
+### 1. Intelligent Selection
+
+**Three ways to submit:**
+
+- 📚 Entire course
+- 🎯 Only selected users
+- 👤 Specific user
+
+### 2. Advanced Filters
+
+In the report you can filter by:
+
+- Status (synchronized/error/pending)
+- Last synchronization date
+- Error type
+- Course or LTI tool
+
+### 3. Automatic Statistics
+
+The system counts only:
 
 ```
-✅ Éxitos: 47 calificaciones
-❌ Errores: 3 fallos  
-📊 Total: 50 procesados
+✅ Successes: 47 grades
+❌ Errors: 3 failures
+📊 Total: 50 processed
 ```
 
 ---
 
-## 📁 Estructura de Archivos
+## 📁 File Structure
 
-### Archivos Principales Nuevos
+### New Main Files
 
 ```
 local/ltiprovider/
-├── syncreport.php           → Reporte visual
-├── syncmembers.php          → Sync de usuarios
-├── test/forcesendgrades.php → Envío forzado mejorado
+├── syncreport.php           → Visual report
+├── syncmembers.php          → User sync
+├── test/forcesendgrades.php → Enhanced forced submission
 └── extension/
     └── amnh/
-        ├── syncreport.php   → Versión AMNH del reporte
-        ├── view.php         → Dashboard AMNH
-        ├── templates/       → Plantillas visuales
+        ├── syncreport.php   → AMNH report version
+        ├── view.php         → AMNH Dashboard
+        ├── templates/       → Visual templates
         ├── amd/            → JavaScript
-        └── soap/           → Cliente SOAP
+        └── soap/           → SOAP client
 ```
 
 ---
 
-## 🔐 Seguridad
+## 🔐 Security
 
-### Mejoras implementadas:
+### Improvements implemented:
 
-✅ **Validación de sesión** (CSRF protection)
-✅ **Permisos por contexto** (no globales)
-✅ **Sanitización estricta** de parámetros
-✅ **Verificación de capacidades** por rol
+✅ **Session validation** (CSRF protection)  
+✅ **Context-based permissions** (not global)  
+✅ **Strict sanitization** of parameters  
+✅ **Capability verification** by role  
 
 ---
 
-## 💡 Casos de Uso
+## 💡 Use Cases
 
-### Caso 1: Profesor cambia una nota
+### Use Case 1: Teacher changes a grade
 
-**Antes:**
-
-```
-Cambiar nota → Esperar 30 min → Verificar Canvas
-```
-
-**Ahora:**
+**Before:**
 
 ```
-Cambiar nota → Reporte → Seleccionar alumno → Force Send → ✅ Listo
-Tiempo: 2 minutos
+Change grade → Wait 30 min → Check Canvas
 ```
 
-### Caso 2: Error masivo de sincronización
-
-**Antes:**
+**After:**
 
 ```
-Ver que 50 alumnos tienen error
-→ Contactar IT
-→ IT ejecuta script
-→ Esperar
-→ Verificar manualmente
-Tiempo: 2-3 horas
+Change grade → Report → Select student → Force Send → ✅ Done
+Time: 2 minutes
 ```
 
-**Ahora:**
+### Use Case 2: Massive synchronization error
+
+**Before:**
 
 ```
-Filtrar por "Error"
-→ Seleccionar todos (checkbox)
+50 students have errors
+→ Contact IT
+→ IT runs script
+→ Wait
+→ Manual verification
+Time: 2-3 hours
+```
+
+**After:**
+
+```
+Filter by "Error"
+→ Select all (checkbox)
 → Force Send
-→ Ver resultado: 48 ✅, 2 ❌
-→ Resolver solo los 2 problemáticos
-Tiempo: 15 minutos
+→ See result: 48 ✅, 2 ❌
+→ Fix only the 2 problematic
+Time: 15 minutes
 ```
 
 ---
 
-## 🎯 Beneficios Principales
+## 🎯 Main Benefits
 
-| Beneficio                 | Descripción                       |
-| ------------------------- | ---------------------------------- |
-| ⚡**Velocidad**     | De 30 minutos a 2 minutos          |
-| 🎯**Precisión**    | Selección específica de usuarios |
-| 👁️**Visibilidad** | Sabes al instante qué pasó       |
-| 🐛**Debugging**     | Logs clasificados y claros         |
-| 💪**Control**       | Tú decides cuándo sincronizar    |
-| 📊**Estadísticas** | Contadores automáticos            |
-
----
-
-## 📊 Impacto
-
-### Antes (LTI Provider solo)
-
-```
-Sincronización manual: 0%
-Tiempo promedio de resolución: 45 min
-Visibilidad de errores: Baja
-Satisfacción usuarios: Media
-```
-
-### Después (Con AMNH)
-
-```
-Sincronización manual selectiva: 30% ✨
-Tiempo promedio de resolución: 5 min ✨
-Visibilidad de errores: Alta ✨
-Satisfacción usuarios: Alta ✨
-```
+| Benefit             | Description                      |
+| ------------------- | -------------------------------- |
+| ⚡ **Speed**        | From 30 minutes to 2 minutes     |
+| 🎯 **Precision**    | Specific user selection          |
+| 👁️ **Visibility**  | Know instantly what happened     |
+| 🐛 **Debugging**    | Classified and clear logs        |
+| 💪 **Control**      | You decide when to sync          |
+| 📊 **Statistics**   | Automatic counters               |
 
 ---
 
-## 📌 Resumen en 3 Puntos
+## 📊 Impact
 
-1. **LTI Provider** = Conexión Moodle ↔ Canvas/Blackboard
-2. **AMNH Extension** = Interface moderna + control granular
-3. **Resultado** = Mismo poder, más fácil de usar
+### Before (LTI Provider only)
+
+```
+Manual synchronization: 0%
+Average resolution time: 45 min
+Error visibility: Low
+User satisfaction: Medium
+```
+
+### After (With AMNH)
+
+```
+Selective manual sync: 30% ✨
+Average resolution time: 5 min ✨
+Error visibility: High ✨
+User satisfaction: High ✨
+```
 
 ---
 
-**En pocas palabras:** AMNH hace que usar LTI Provider sea tan fácil como dar clic en un botón, en lugar de escribir comandos técnicos.
+## 📌 Summary in 3 Points
+
+1. **LTI Provider** = Moodle ↔ Canvas/Blackboard connection
+2. **AMNH Extension** = Modern interface + granular control
+3. **Result** = Same power, easier to use
 
 ---
 
-**Versión:** 1.0
-**Fecha:** Enero 2026
+**In a nutshell:** AMNH makes using LTI Provider as easy as clicking a button, instead of writing technical commands.
+
+---
+
+**Version:** 1.0  
+**Date:** January 2026
